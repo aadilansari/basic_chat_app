@@ -54,7 +54,12 @@ class _PairingPageState extends State<PairingPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ScanQrPage(onScanComplete: handleScannedToken),
+                    builder: (_) => ScanQrPage(
+                      onScanComplete: (user) {
+                        // Handle the paired user here, e.g. refresh UI
+                        print("Paired with ${user.name}");
+                      },
+                    ),
                   ),
                 );
               },

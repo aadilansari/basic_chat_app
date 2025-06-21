@@ -1,60 +1,54 @@
+import 'dart:convert';
+import 'package:basic_chat_app/data/models/user_model.dart';
+import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanQrPage extends StatefulWidget {
-  final Function(String token) onScanComplete;
-  const ScanQrPage({super.key, required this.onScanComplete});
+  final void Function(UserModel)? onScanComplete;
+  const ScanQrPage({super.key, this.onScanComplete});
 
   @override
   State<ScanQrPage> createState() => _ScanQrPageState();
 }
 
 class _ScanQrPageState extends State<ScanQrPage> {
-  final MobileScannerController _controller = MobileScannerController();
+  bool _isScanned = false;
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  void _handleScan(String code) async {
+    if (_isScanned) return;
+    _isScanned = true;
 
-  void _onDetect(BarcodeCapture capture) async {
-  final Barcode? barcode = capture.barcodes.first;
-  final String? code = barcode?.rawValue;
-  if (code != null) {
-    _controller.stop();
-    
-    // Show loading indicator
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
-    
     try {
-      await widget.onScanComplete(code);
-      Navigator.pop(context); // Close loading
-      Navigator.pop(context); // Return to pairing page
-      
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Successfully connected!')),
-      );
+      final json = jsonDecode(code);
+      final user = UserModel.fromJson(json);
+
+      await PairedUserStorageService().addUser(user);
+
+      if (context.mounted) {
+        widget.onScanComplete?.call(user); // Pass back user 💡
+        Navigator.pop(context);
+      }
     } catch (e) {
-      Navigator.pop(context); // Close loading
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Connection failed: ${e.toString()}')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Invalid QR Code")));
+        Navigator.pop(context);
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Scan QR Code")),
       body: MobileScanner(
-        controller: _controller,
-        onDetect: _onDetect,
+        controller: MobileScannerController(),
+        onDetect: (barcode) {
+          final code = barcode.raw.toString();
+          if (code != null) _handleScan(code);
+        },
       ),
     );
   }
