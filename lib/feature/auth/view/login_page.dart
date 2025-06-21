@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/core/widgets/custom_textfield.dart';
 import 'package:basic_chat_app/core/widgets/password_textfield.dart';
 import 'package:basic_chat_app/feature/auth/view/register_page.dart';
@@ -71,6 +72,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+     final t = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -79,8 +81,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Login',
+               Text(
+                t.translate('login'),
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
               Padding(
@@ -102,23 +104,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             SizedBox(height: 16),
                             CustomTextField(
                               controller: emailCtrl,
-                              label: 'Email',
-                              hintText: 'Enter your email',
+                              label: t.translate('email'),
+                              hintText: t.translate('enter_your_email'),
                               keyboardType: TextInputType.emailAddress,
                               icon: Icons.email,
                               validator: (value) =>
                                   (value == null || !value.contains('@'))
-                                  ? 'Invalid email'
+                                  ? t.translate('invalid_email')
                                   : null,
                             ),
                             const SizedBox(height: 16),
                             PasswordTextField(
                               controller: passwordCtrl,
-                              label: 'Password',
-                              hintText: 'Enter your password',
+                              label: t.translate('password'),
+                              hintText: t.translate('enter_your_password'),
                               validator: (value) =>
                                   (value == null || value.length < 6)
-                                  ? 'Min 6 characters'
+                                  ? t.translate('min_6_characters')
                                   : null,
                             ),
                             const SizedBox(height: 24),
@@ -126,7 +128,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               onPressed: _isLoading ? null : _submit,
                               child: _isLoading
                                   ? const CircularProgressIndicator()
-                                  : const Text("Login"),
+                                  :  Text(t.translate('login')),
                             ),
                           ],
                         ),
@@ -142,7 +144,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     MaterialPageRoute(builder: (_) => const RegisterPage()),
                   );
                 },
-                child: const Text("Don't have an account? Sign Up"),
+                child:  Text(t.translate('dont_have_account')),
               ),
             ],
           ),

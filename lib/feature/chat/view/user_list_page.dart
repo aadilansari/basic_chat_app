@@ -1,3 +1,4 @@
+import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
 import 'package:flutter/material.dart';
 import '../../../data/models/user_model.dart';
@@ -26,10 +27,11 @@ class _UserListPageState extends State<UserListPage> {
 
   @override
   Widget build(BuildContext context) {
+     final t = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text("Paired Users")),
+      appBar: AppBar(title:  Text(t.translate('paired_user'))),
       body: users.isEmpty
-          ? const Center(child: Text("No paired users found."))
+          ?  Center(child: Text(t.translate('no_paired_user_found')))
           : ListView.builder(
               itemCount: users.length,
               itemBuilder: (_, index) {
@@ -41,7 +43,7 @@ class _UserListPageState extends State<UserListPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ChatPage(partnerId: user.fcmToken),
+                        builder: (_) => ChatPage(user:user),
                       ),
                     );
                   },

@@ -1,5 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:basic_chat_app/core/localization/app_localization.dart';
+import 'package:basic_chat_app/core/widgets/theme_toggle_button.dart';
+import 'package:basic_chat_app/provider/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../feature/auth/view/login_page.dart';
@@ -10,20 +13,31 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title:Text(t.translate('settings'))),
       body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.logout),
-          label: const Text("Logout"),
-          onPressed: () async {
-            await ref.read(authProvider.notifier).logout();
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => const LoginPage()),
-              (route) => false,
-            );
-          },
+        child: Column(
+          children: [
+            ElevatedButton.icon(
+              
+              icon: const Icon(Icons.logout),
+              label:  Text(t.translate('logout')),
+              onPressed: () async {
+                await ref.read(authProvider.notifier).logout();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginPage()),
+                  (route) => false,
+                );
+              },
+            ),
+             ElevatedButton(
+            onPressed: () => switchLanguage(ref),
+            child: Text(t.translate('language')),
+          ),
+            ThemeToggleButton()
+          ],
         ),
       ),
     );

@@ -16,7 +16,8 @@ final countryListProvider = FutureProvider<List<String>>((ref) async {
   }
 
   // 🌐 Fetch from API
-  final res = await http.get(Uri.parse('https://restcountries.com/v3.1/all'));
+  //https://restcountries.com/v3.1/independent?status=true
+  final res = await http.get(Uri.parse('https://restcountries.com/v3.1/independent?status=true'));
   if (res.statusCode != 200) throw Exception("Failed to load countries");
 
   final List data = jsonDecode(res.body);

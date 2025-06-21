@@ -1,3 +1,4 @@
+import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/feature/chat/view/user_list_page.dart';
 import 'package:basic_chat_app/feature/map/view/map_page.dart';
 import 'package:basic_chat_app/feature/qr/view/pairing_page.dart';
@@ -27,13 +28,13 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: ref.read(bottomNavProvider));
+    _pageController = PageController(initialPage: 0);
   }
 
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(bottomNavProvider);
-
+    final t = AppLocalizations.of(context);
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -55,13 +56,13 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
           ref.read(bottomNavProvider.notifier).state = index;
           _pageController.jumpToPage(index);
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'QR'),
+        items:  [
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: t.translate('chat')),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: t.translate('map')),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: t.translate('qr')),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings',
+            label: t.translate('settings'),
           ),
         ],
       ),

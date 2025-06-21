@@ -46,7 +46,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
       body: MobileScanner(
         controller: MobileScannerController(),
         onDetect: (barcode) {
-          final code = barcode.raw.toString();
+          final code = barcode.barcodes[0].displayValue;
           if (code != null) _handleScan(code);
         },
       ),

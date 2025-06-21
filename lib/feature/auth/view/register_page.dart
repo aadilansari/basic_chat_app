@@ -1,3 +1,4 @@
+import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/core/widgets/custom_textfield.dart';
 import 'package:basic_chat_app/core/widgets/password_textfield.dart';
 import 'package:basic_chat_app/data/models/user_model.dart';
@@ -74,129 +75,133 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   Widget build(BuildContext context) {
     final countryListAsync = ref.watch(countryListProvider);
     final selectedCountry = ref.watch(selectedCountryProvider);
-
+final t = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
-          ),
-          child: IntrinsicHeight(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            CustomTextField(
-                              controller: emailCtrl,
-                              label: 'Email',
-                              hintText: 'Enter your email',
-                              keyboardType: TextInputType.emailAddress,
-                              icon: Icons.email,
-                              validator: (v) => (v == null || !v.contains('@'))
-                                  ? 'Invalid email'
-                                  : null,
-                            ),
-                            const SizedBox(height: 16),
-                            CustomTextField(
-                              controller: nameCtrl,
-                              label: 'Name',
-                              hintText: 'Enter your name',
-                              icon: Icons.person,
-                              validator: (v) => (v == null || v.isEmpty)
-                                  ? 'Name cannot be empty'
-                                  : null,
-                            ),
-                            const SizedBox(height: 16),
-                            CustomTextField(
-                              controller: phoneCtrl,
-                              label: 'Phone',
-                              hintText: 'Enter your phone number',
-                              keyboardType: TextInputType.phone,
-                              icon: Icons.phone,
-                              validator: (v) => (v == null || v.isEmpty)
-                                  ? 'Phone number required'
-                                  : null,
-                            ),
-                            const SizedBox(height: 16),
-                            countryListAsync.when(
-                              data: (countries) =>
-                                  DropdownButtonFormField<String>(
-                                    value: selectedCountry,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Country',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    items: countries.map((country) {
-                                      return DropdownMenuItem(
-                                        value: country,
-                                        child: Text(country),
-                                      );
-                                    }).toList(),
-                                    onChanged: (value) =>
-                                        ref
-                                                .read(
-                                                  selectedCountryProvider
-                                                      .notifier,
-                                                )
-                                                .state =
-                                            value,
-                                    validator: (v) => v == null
-                                        ? 'Please select a country'
-                                        : null,
-                                  ),
-                              loading: () => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              error: (e, _) =>
-                                  Text('Error loading countries: $e'),
-                            ),
-                            const SizedBox(height: 16),
-                            PasswordTextField(
-                              controller: passwordCtrl,
-                              label: 'Password',
-                              hintText: 'Enter your password',
-                              validator: (v) => (v == null || v.length < 6)
-                                  ? 'Min 6 characters'
-                                  : null,
-                            ),
-                            const SizedBox(height: 16),
-                            PasswordTextField(
-                              controller: confirmCtrl,
-                              label: 'Confirm Password',
-                              hintText: 'Re-enter password',
-                              validator: (v) => v != passwordCtrl.text
-                                  ? 'Passwords do not match'
-                                  : null,
-                            ),
-                            const SizedBox(height: 24),
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.check),
-                              label: Text(
-                                _isLoading ? 'Registering...' : 'Register',
-                              ),
-                              onPressed: _isLoading ? null : _submit,
-                            ),
-                          ],
+  appBar: AppBar(
+    title: Text(t.translate("back")),
+  ),
+  body: SingleChildScrollView(
+    child: ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height,
+      ),
+      child: IntrinsicHeight(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              t.translate('register'),
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                          controller: emailCtrl,
+                          label: t.translate('email'),
+                          hintText: t.translate('enter_your_email'),
+                          keyboardType: TextInputType.emailAddress,
+                          icon: Icons.email,
+                          validator: (v) => (v == null || !v.contains('@'))
+                              ? t.translate('invalid_email')
+                              : null,
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          controller: nameCtrl,
+                          label: t.translate('name'),
+                          hintText: t.translate('enter_your_name'),
+                          icon: Icons.person,
+                          validator: (v) => (v == null || v.isEmpty)
+                              ? t.translate('name_required')
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        CustomTextField(
+                          controller: phoneCtrl,
+                          label: t.translate('phone'),
+                          hintText: t.translate('enter_your_phone'),
+                          keyboardType: TextInputType.phone,
+                          icon: Icons.phone,
+                          validator: (v) => (v == null || v.isEmpty)
+                              ? t.translate('phone_required')
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        countryListAsync.when(
+                          data: (countries) => DropdownButtonFormField<String>(
+                            value: selectedCountry,
+                            decoration: InputDecoration(
+                              labelText: t.translate('country'),
+                              border: const OutlineInputBorder(),
+                            ),
+                            items: countries.map((country) {
+                              return DropdownMenuItem(
+                                value: country,
+                                child: Text(country),
+                              );
+                            }).toList(),
+                            onChanged: (value) => ref
+                                .read(selectedCountryProvider.notifier)
+                                .state = value,
+                            validator: (v) => v == null
+                                ? t.translate('select_country')
+                                : null,
+                          ),
+                          loading: () => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          error: (e, _) => Text(
+                            "${t.translate('country_load_error')}: $e",
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        PasswordTextField(
+                          controller: passwordCtrl,
+                          label: t.translate('password'),
+                          hintText: t.translate('enter_your_password'),
+                          validator: (v) => (v == null || v.length < 6)
+                              ? t.translate('min_6_characters')
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        PasswordTextField(
+                          controller: confirmCtrl,
+                          label: t.translate('confirm_password'),
+                          hintText: t.translate('reenter_password'),
+                          validator: (v) => v != passwordCtrl.text
+                              ? t.translate('passwords_do_not_match')
+                              : null,
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.check),
+                          label: Text(
+                            _isLoading
+                                ? t.translate('registering')
+                                : t.translate('register'),
+                          ),
+                          onPressed: _isLoading ? null : _submit,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
-    );
+    ),
+  ),
+);
+
   }
 }

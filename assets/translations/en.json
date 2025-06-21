@@ -7,5 +7,40 @@
   "confirm_password": "Confirm Password",
   "logout": "Logout",
   "language": "Language",
-  "dark_mode": "Dark Mode"
+  "dark_mode": "Dark Mode",
+  "paired_user":"Paired User",
+  "no_paired_user_found": "No paired user found",
+  "map":"Map",
+  "chat":"Chat",
+  "qr":"QR",
+  "settings":"Settings",
+  "qr_actions":"QR Actions",
+  "scan_to_pair_with_user":"Scan to pair with User",
+  "your_qr_code":"Your QR Code",
+ 
+  "enter_your_email": "Enter your email",
+  "invalid_email": "Invalid email",
+  "enter_your_password": "Enter your password",
+  "min_6_characters": "Min 6 characters",
+  "dont_have_account": "Don't have an account? Sign Up",
+   "no_device_paired": "No device paired yet.",
+  "paired_with": "Paired with:\n{token}",
+  "scan_partner_qr": "Scan Partner QR Code",
+  "back": "Back",
+  "register": "Register",
+  "registering": "Registering...",
+ 
+  "name": "Name",
+  "enter_your_name": "Enter your name",
+  "name_required": "Name cannot be empty",
+  "phone": "Phone",
+  "enter_your_phone": "Enter your phone number",
+  "phone_required": "Phone number required",
+  "country": "Country",
+  "select_country": "Please select a country",
+  "country_load_error": "Error loading countries",
+  "reenter_password": "Re-enter password",
+  "passwords_do_not_match": "Passwords do not match"
+ 
+
 }

@@ -23,7 +23,7 @@ class AppLocalizations {
     return true;
   }
 
-  String translate(String key) => _localizedStrings[key] ?? '** $key not found';
+  String translate(String key, { Map<String, String?>? params}) => _localizedStrings[key] ?? '** $key not found';
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
