@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:ffi';
+
 import 'package:basic_chat_app/core/widgets/custom_textfield.dart';
 import 'package:basic_chat_app/core/widgets/password_textfield.dart';
 import 'package:basic_chat_app/feature/auth/view/register_page.dart';
@@ -42,7 +44,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final fcmToken = await FirebaseMessaging.instance.getToken();
 
     try {
-      await ref.read(authProvider.notifier).loginWithEmailPassword(
+      await ref
+          .read(authProvider.notifier)
+          .loginWithEmailPassword(
             email: email,
             password: password,
             fcmToken: fcmToken ?? '',
@@ -57,9 +61,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         MaterialPageRoute(builder: (_) => const MainNavigationPage()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -68,39 +72,68 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              CustomTextField(
-                controller: emailCtrl,
-                label: 'Email',
-                hintText: 'Enter your email',
-                keyboardType: TextInputType.emailAddress,
-                icon: Icons.email,
-                validator: (value) =>
-                    (value == null || !value.contains('@'))
-                        ? 'Invalid email'
-                        : null,
+              const Text(
+                'Login',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16),
-              PasswordTextField(
-                controller: passwordCtrl,
-                label: 'Password',
-                hintText: 'Enter your password',
-                validator: (value) => (value == null || value.length < 6)
-                    ? 'Min 6 characters'
-                    : null,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _submit,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text("Login"),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Card(
+                      elevation: 5,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(height: 16),
+                            CustomTextField(
+                              controller: emailCtrl,
+                              label: 'Email',
+                              hintText: 'Enter your email',
+                              keyboardType: TextInputType.emailAddress,
+                              icon: Icons.email,
+                              validator: (value) =>
+                                  (value == null || !value.contains('@'))
+                                  ? 'Invalid email'
+                                  : null,
+                            ),
+                            const SizedBox(height: 16),
+                            PasswordTextField(
+                              controller: passwordCtrl,
+                              label: 'Password',
+                              hintText: 'Enter your password',
+                              validator: (value) =>
+                                  (value == null || value.length < 6)
+                                  ? 'Min 6 characters'
+                                  : null,
+                            ),
+                            const SizedBox(height: 24),
+                            ElevatedButton(
+                              onPressed: _isLoading ? null : _submit,
+                              child: _isLoading
+                                  ? const CircularProgressIndicator()
+                                  : const Text("Login"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               TextButton(
                 onPressed: () {

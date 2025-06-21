@@ -13,18 +13,18 @@ class ShowQrPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('QR Options')),
-      body: FutureBuilder(
-        future: notifService.getDeviceToken(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Center(
+        child: FutureBuilder(
+          future: notifService.getDeviceToken(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const CircularProgressIndicator();
+            }
 
-          final token = snapshot.data!;
+            final token = snapshot.data!;
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
+            return Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
@@ -32,11 +32,7 @@ class ShowQrPage extends ConsumerWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                QrImageView(
-                  data: token,
-                  size: 250,
-                  version: QrVersions.auto,
-                ),
+                QrImageView(data: token, size: 250, version: QrVersions.auto),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.qr_code_scanner),
@@ -44,16 +40,14 @@ class ShowQrPage extends ConsumerWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => const PairingPage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const PairingPage()),
                     );
                   },
                 ),
               ],
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

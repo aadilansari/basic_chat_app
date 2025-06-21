@@ -1,6 +1,7 @@
 import 'package:basic_chat_app/data/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class MapPage extends StatefulWidget {
@@ -23,19 +24,27 @@ class _MapPageState extends State<MapPage> {
     _loadLocation();
   }
 
-  Future<void> _loadLocation() async {
-    try {
+ Future<void> _loadLocation() async {
+  try {
+    final status = await Permission.locationWhenInUse.request();
+
+    if (status.isGranted) {
       final position = await LocationService().getCurrentLocation();
       setState(() {
         currentPosition = LatLng(position.latitude, position.longitude);
       });
 
       _createBoundary(position.latitude, position.longitude);
-    } catch (e) {
-      print("❌ Location error: $e");
+    } else {
+      // Handle denied permission
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Location permission is required to show map")),
+      );
     }
+  } catch (e) {
+    print("❌ Location error: $e");
   }
-
+}
   void _createBoundary(double lat, double lng) {
     // Rectangle corners for approx 2km square
     const delta = 0.009; // ~1km latitude/longitude

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ChatPage extends ConsumerStatefulWidget {
+class ChatPage extends ConsumerStatefulWidget { 
   final String partnerId;
 
   const ChatPage({super.key, required this.partnerId});
@@ -19,10 +19,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
     super.initState();
-    getUser();
+    getmyUser();
   }
 
-  getUser() async {
+  getmyUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userEmail = prefs.getString('user_email');
     if (userEmail == null) {
