@@ -4,9 +4,10 @@ import 'package:basic_chat_app/data/models/user_model.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/home/view/home_page.dart';
 import 'package:basic_chat_app/provider/country_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 final selectedCountryProvider = StateProvider<String?>((ref) => null);
 
@@ -36,24 +37,38 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     super.dispose();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      final selectedCountry = ref.read(selectedCountryProvider);
-      final user = UserModel(
-        email: emailCtrl.text.trim(),
-        name: nameCtrl.text.trim(),
-        phone: phoneCtrl.text.trim(),
-        country: selectedCountry ?? "Unknown",
-      );
+ bool _isLoading = false;
 
-      ref.read(authProvider.notifier).login(user);
+Future<void> _submit() async {
+  if (_formKey.currentState!.validate()) {
+    setState(() => _isLoading = true);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
-      );
-    }
+    final selectedCountry = ref.read(selectedCountryProvider);
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+
+    final user = UserModel(
+      email: emailCtrl.text.trim(),
+      name: nameCtrl.text.trim(),
+      phone: phoneCtrl.text.trim(),
+      country: selectedCountry ?? "Unknown",
+      fcmToken: fcmToken ?? '',
+      password: passwordCtrl.text.trim(),
+    );
+
+    ref.read(authProvider.notifier).register(user);
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_email', user.email);
+
+    setState(() => _isLoading = false);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +98,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 label: 'Name',
                 hintText: 'Enter your name',
                 icon: Icons.person,
-                validator: (v) => (v == null || v.isEmpty)
-                    ? 'Name cannot be empty'
-                    : null,
+                validator: (v) =>
+                    (v == null || v.isEmpty) ? 'Name cannot be empty' : null,
               ),
               const SizedBox(height: 16),
               CustomTextField(
@@ -94,9 +108,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 hintText: 'Enter your phone number',
                 keyboardType: TextInputType.phone,
                 icon: Icons.phone,
-                validator: (v) => (v == null || v.isEmpty)
-                    ? 'Phone number required'
-                    : null,
+                validator: (v) =>
+                    (v == null || v.isEmpty) ? 'Phone number required' : null,
               ),
               const SizedBox(height: 16),
               countryListAsync.when(
@@ -114,7 +127,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   }).toList(),
                   onChanged: (value) =>
                       ref.read(selectedCountryProvider.notifier).state = value,
-                  validator: (v) => v == null ? 'Please select a country' : null,
+                  validator: (v) =>
+                      v == null ? 'Please select a country' : null,
                 ),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Text('Error loading countries: $e'),
@@ -132,16 +146,16 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 controller: confirmCtrl,
                 label: 'Confirm Password',
                 hintText: 'Re-enter password',
-                validator: (v) => v != passwordCtrl.text
-                    ? 'Passwords do not match'
-                    : null,
+                validator: (v) =>
+                    v != passwordCtrl.text ? 'Passwords do not match' : null,
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
-                icon: const Icon(Icons.check),
-                label: const Text('Register'),
-                onPressed: _submit,
-              )
+  icon: const Icon(Icons.check),
+  label: Text(_isLoading ? 'Registering...' : 'Register'),
+  onPressed: _isLoading ? null : _submit,
+),
+              
             ],
           ),
         ),

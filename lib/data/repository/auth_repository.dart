@@ -19,6 +19,6 @@ class AuthRepository {
 
   Future<void> clearUser() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(userKey);
+    // await prefs.remove(userKey);
   }
 }

@@ -20,13 +20,35 @@ class AuthViewModel extends StateNotifier<UserModel?> {
     state = user;
   }
 
-  Future<void> login(UserModel user) async {
+ Future<void> loginWithEmailPassword({
+    required String email,
+    required String password,
+    required String fcmToken,
+  }) async {
+    final storedUser = await _repo.getUser();
+
+    if (storedUser == null) {
+      throw Exception('No registered user found.');
+    }
+
+    if (storedUser.email == email && storedUser.password == password) {
+      final updatedUser = storedUser.copyWith(fcmToken: fcmToken);
+      await _repo.saveUser(updatedUser);
+      state = updatedUser;
+    } else {
+      throw Exception('Invalid email or password');
+    }
+  }
+
+ Future<void> register(UserModel user) async {
     await _repo.saveUser(user);
     state = user;
   }
 
-  Future<void> logout() async {
+ Future<void> logout() async {
     await _repo.clearUser();
     state = null;
   }
+
+
 }

@@ -20,6 +20,13 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.5.3
   http: ^1.4.0
+  sqflite: ^2.4.2
+  firebase_messaging: ^15.2.7
+  qr_flutter: ^4.1.0
+  googleapis_auth: ^2.0.0
+  geolocator: ^14.0.1
+  google_maps_flutter: ^2.12.3
+  mobile_scanner: ^7.0.1
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +40,7 @@ flutter:
   generate: true
   assets:
     - assets/translations/
+    - assets/service_account.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
