@@ -25,6 +25,8 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
     SettingsPage(), // Create this next
   ];
 
+  
+
   @override
   void initState() {
     super.initState();

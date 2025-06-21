@@ -17,6 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
  FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
+ initializeLocalNotifications();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -30,6 +31,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+    ref.read(notificationProvider).initialize();
     ref.read(notificationProvider).setupForegroundListener();
     return MaterialApp(
       title: 'Chat App',
@@ -56,6 +58,8 @@ class MyApp extends ConsumerWidget {
 
 class ThemeTogglePage extends ConsumerWidget {
   const ThemeTogglePage({super.key});
+
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -1,9 +1,16 @@
+import 'package:basic_chat_app/data/models/message_model.dart';
 import 'package:basic_chat_app/data/models/user_model.dart';
+import 'package:basic_chat_app/data/services/database_service.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/chat/viewmodel/chat_viewmodel.dart';
+import 'package:basic_chat_app/main.dart';
+import 'package:basic_chat_app/provider/notification_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   final UserModel user;
@@ -16,6 +23,97 @@ class ChatPage extends ConsumerStatefulWidget {
 
 class _ChatPageState extends ConsumerState<ChatPage> {
   final msgController = TextEditingController();
+
+
+  late final FirebaseMessaging messaging;
+
+  @override
+  void initState() {
+    super.initState();
+    messaging = FirebaseMessaging.instance;
+
+    // Request permissions (iOS/Android 13+)
+    requestNotificationPermissions();
+
+    // Get the FCM token and print it (send to your backend or share with sender)
+    messaging.getToken().then((token) {
+      print('🔑 FCM Token: $token');
+      // TODO: Save/send token to backend or relevant user logic
+    });
+
+    // Listen to foreground messages
+   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+  print('🔔 Received foreground message: ${message.data}');
+
+  final sender = message.data['sender'] ?? 'Unknown';
+  final text = message.data['message'] ?? '';
+
+  final prefs = await SharedPreferences.getInstance();
+  final currentUserEmail = prefs.getString('user_email') ?? 'unknown_user@example.com';
+
+  final newMessage = MessageModel(
+    sender: sender,
+    receiver: currentUserEmail,
+    message: text,
+    timestamp: DateTime.now(),
+  );
+
+  final db = DatabaseService();
+  await db.insertMessage(newMessage);
+
+  print("📥 [FG] Message stored from $sender");
+
+  // Show local notification
+  RemoteNotification? notification = message.notification;
+  AndroidNotification? android = message.notification?.android;
+
+  if (notification != null && android != null) {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'default_channel_id', // channel id
+      'Default Channel', // channel name
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+
+    await flutterLocalNotificationsPlugin.show(
+      notification.hashCode,
+      notification.title ?? 'New Message from $sender',
+      notification.body ?? text,
+      platformDetails,
+      payload: 'chat', // optional, can pass data for handling on tap
+    );
+  }
+});
+
+    // Handle user tapping on notification when app is in background but opened via notification
+   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  print('📲 Notification clicked with data: ${message.data}');
+
+  final senderEmail = message.data['sender'];
+  if (senderEmail != null) {
+   
+    globalNavigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => ChatPage(user: widget.user), 
+      ),
+    );
+  }
+});
+
+  }
+
+  Future<void> requestNotificationPermissions() async {
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    print('🔔 User granted permission: ${settings.authorizationStatus}');
+  }
 
   @override
   void didChangeDependencies() {
