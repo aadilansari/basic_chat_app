@@ -18,7 +18,7 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
   late PageController _pageController;
 
   final List<Widget> _pages = [
-    PairingPage(),
+    const UserListPage(), // This is the chat page
     MapPage(),
     ShowQrPage(),
     SettingsPage(), // Create this next
