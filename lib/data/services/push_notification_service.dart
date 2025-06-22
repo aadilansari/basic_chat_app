@@ -34,8 +34,11 @@ Future<String> _getAccessTokenFromFile() async {
 
   Future<void> sendPushNotification({
     required String targetToken,
+    required String currentToken,
     required String senderName,
+    required String senderEmail,
     required String message,
+    required String senderPhone,
   }) async {
     try {
       final accessToken = await _getAccessTokenFromFile();
@@ -54,6 +57,9 @@ Future<String> _getAccessTokenFromFile() async {
           "data": {
             "sender": senderName,
             "message": message,
+            'email': senderEmail,
+            'fcm':currentToken,
+            'phone': senderPhone
           }
         }
       };

@@ -24,6 +24,9 @@ final chatProvider = StateNotifierProvider.family<ChatViewModel, List<MessageMod
       db: db,
       partnerUser: partnerUser,
       currentUserEmail: currentUser?.email ?? '',
+      currentUserName:currentUser?.name??'',
+      currentPhone: currentUser?.phone ??'',
+      currentToken:currentUser?.fcmToken??'',
       pushService: pushService,
     );
   },
@@ -32,13 +35,19 @@ final chatProvider = StateNotifierProvider.family<ChatViewModel, List<MessageMod
 class ChatViewModel extends StateNotifier<List<MessageModel>> {
   final DatabaseService db;
   final String currentUserEmail;
+  final String currentUserName;
+  final String currentToken;
   final UserModel partnerUser;
+  final String currentPhone;
   final PushNotificationService pushService;
 
   ChatViewModel({
     required this.db,
     required this.currentUserEmail,
+    required this.currentUserName,
+    required this.currentToken,
     required this.partnerUser,
+    required this.currentPhone,
     required this.pushService,
   }) : super([]) {
     loadMessages();
@@ -65,7 +74,10 @@ class ChatViewModel extends StateNotifier<List<MessageModel>> {
 
     await pushService.sendPushNotification(
       targetToken: partnerUser.fcmToken,
-      senderName: currentUserEmail,
+      currentToken: currentToken ,
+      senderName: currentUserName,
+      senderEmail: currentUserEmail ,
+      senderPhone: currentPhone,
       message: msg,
     );
   }

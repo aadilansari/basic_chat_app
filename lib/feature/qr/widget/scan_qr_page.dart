@@ -1,18 +1,19 @@
 import 'dart:convert';
 import 'package:basic_chat_app/data/models/user_model.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
+import 'package:basic_chat_app/feature/chat/view/user_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class ScanQrPage extends StatefulWidget {
+class ScanQrPage extends ConsumerStatefulWidget {
   final void Function(UserModel)? onScanComplete;
   const ScanQrPage({super.key, this.onScanComplete});
 
   @override
-  State<ScanQrPage> createState() => _ScanQrPageState();
+  ConsumerState<ScanQrPage> createState() => _ScanQrPageState();
 }
-
-class _ScanQrPageState extends State<ScanQrPage> {
+class _ScanQrPageState extends ConsumerState<ScanQrPage> {
   bool _isScanned = false;
 
   void _handleScan(String code) async {
@@ -23,17 +24,22 @@ class _ScanQrPageState extends State<ScanQrPage> {
       final json = jsonDecode(code);
       final user = UserModel.fromJson(json);
 
-      await PairedUserStorageService().addUser(user);
+      // Use ref here safely
+       await PairedUserStorageService().addUser(user);
 
       if (context.mounted) {
-        widget.onScanComplete?.call(user); // Pass back user 💡
+        widget.onScanComplete?.call(user);
         Navigator.pop(context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const UserListPage()),
+        );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Invalid QR Code")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Invalid QR Code")),
+        );
         Navigator.pop(context);
       }
     }

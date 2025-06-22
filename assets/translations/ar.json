@@ -40,5 +40,10 @@
   "country_load_error": "خطأ في تحميل قائمة الدول",
 
   "reenter_password": "أعد إدخال كلمة المرور",
-  "passwords_do_not_match": "كلمتا المرور غير متطابقتين"
+  "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
+  "current_user": "المستخدم الحالي {name} {email}",
+  "paired_with_user": "مقترن مع {name} ({email})",
+  "scan_to_pair": "امسح رمز الاستجابة السريعة للاقتران مع الجهاز",
+  "pairing_successful": "تم الاقتران بنجاح مع {name}",
+  "scan_qr": "مسح رمز الاستجابة السريعة"
 }

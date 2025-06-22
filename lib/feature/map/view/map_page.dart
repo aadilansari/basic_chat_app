@@ -1,8 +1,8 @@
 import 'package:basic_chat_app/data/services/location_service.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -12,11 +12,10 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  GoogleMapController? mapController;
   LatLng? currentPosition;
-  Set<Circle> circles = {};
-  Set<Polygon> rectangles = {};
-  Set<Marker> markers = {};
+  final MapController mapController = MapController();
+  List<Polygon> rectangles = [];
+  List<Marker> markers = [];
 
   @override
   void initState() {
@@ -24,19 +23,28 @@ class _MapPageState extends State<MapPage> {
     _loadLocation();
   }
 
- Future<void> _loadLocation() async {
+Future<void> _loadLocation() async {
   try {
     final status = await Permission.locationWhenInUse.request();
 
     if (status.isGranted) {
       final position = await LocationService().getCurrentLocation();
+      final lat = position.latitude;
+      final lng = position.longitude;
+
+      if (lat == null || lng == null) {
+        print("❌ Location data is null");
+        return;
+      }
+
+      final latlng = LatLng(lat, lng);
       setState(() {
-        currentPosition = LatLng(position.latitude, position.longitude);
+        currentPosition = latlng;
       });
 
-      _createBoundary(position.latitude, position.longitude);
+      _createBoundary(latlng);
+      mapController.move(latlng, 15.0); // Zoom to location
     } else {
-      // Handle denied permission
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Location permission is required to show map")),
       );
@@ -45,54 +53,60 @@ class _MapPageState extends State<MapPage> {
     print("❌ Location error: $e");
   }
 }
-  void _createBoundary(double lat, double lng) {
-    // Rectangle corners for approx 2km square
-    const delta = 0.009; // ~1km latitude/longitude
 
-    final corners = <LatLng>[
-      LatLng(lat - delta, lng - delta),
-      LatLng(lat - delta, lng + delta),
-      LatLng(lat + delta, lng + delta),
-      LatLng(lat + delta, lng - delta),
+
+  void _createBoundary(LatLng center) {
+    const delta = 0.009; // ~1km lat/lng = ~2km square
+
+    final corners = [
+      LatLng(center.latitude - delta, center.longitude - delta),
+      LatLng(center.latitude - delta, center.longitude + delta),
+      LatLng(center.latitude + delta, center.longitude + delta),
+      LatLng(center.latitude + delta, center.longitude - delta),
     ];
 
     setState(() {
-      rectangles.add(
+      rectangles = [
         Polygon(
-          polygonId: const PolygonId("boundary"),
           points: corners,
-          fillColor: Colors.blue.withOpacity(0.1),
-          strokeColor: Colors.blue,
-          strokeWidth: 2,
+          color: Colors.blue.withOpacity(0.2),
+          borderColor: Colors.blue,
+          borderStrokeWidth: 2,
         ),
-      );
-    });
+      ];
+      markers = [
+       Marker(
+  point: center,
+  width: 40,
+  height: 40,
+  child: const Icon(Icons.location_pin, color: Colors.red, size: 40),
+),
 
-    // Optional: add center marker
-    markers.add(
-      Marker(
-        markerId: const MarkerId("me"),
-        position: LatLng(lat, lng),
-        infoWindow: const InfoWindow(title: "You"),
-      ),
-    );
+      ];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Map View')),
+      appBar: AppBar(title: const Text('Location: Map View')),
       body: currentPosition == null
           ? const Center(child: CircularProgressIndicator())
-          : GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: currentPosition!,
-                zoom: 14,
+          : FlutterMap(
+              mapController: mapController,
+              options: MapOptions(
+                initialCenter: currentPosition!,
+                initialZoom: 15,
               ),
-              polygons: rectangles,
-              markers: markers,
-              myLocationEnabled: true,
-              onMapCreated: (controller) => mapController = controller,
+              children: [
+                TileLayer(
+                  urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  subdomains: const ['a', 'b', 'c'],
+                  userAgentPackageName: 'com.example.basic_chat_app',
+                ),
+                PolygonLayer(polygons: rectangles),
+                MarkerLayer(markers: markers),
+              ],
             ),
     );
   }

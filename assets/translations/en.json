@@ -40,7 +40,10 @@
   "select_country": "Please select a country",
   "country_load_error": "Error loading countries",
   "reenter_password": "Re-enter password",
-  "passwords_do_not_match": "Passwords do not match"
- 
-
+  "passwords_do_not_match": "Passwords do not match",
+  "current_user": "Current user {name} {email}",
+  "paired_with_user": "Paired with {name} ({email})",
+  "scan_to_pair": "Scan QR code to pair with a device",
+  "pairing_successful": "Successfully paired with {name}",
+ "scan_qr":"Scan qr"
 }

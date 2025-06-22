@@ -41,67 +41,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       // TODO: Save/send token to backend or relevant user logic
     });
 
-    // Listen to foreground messages
-   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-  print('🔔 Received foreground message: ${message.data}');
+ 
 
-  final sender = message.data['sender'] ?? 'Unknown';
-  final text = message.data['message'] ?? '';
 
-  final prefs = await SharedPreferences.getInstance();
-  final currentUserEmail = prefs.getString('user_email') ?? 'unknown_user@example.com';
-
-  final newMessage = MessageModel(
-    sender: sender,
-    receiver: currentUserEmail,
-    message: text,
-    timestamp: DateTime.now(),
-  );
-
-  final db = DatabaseService();
-  await db.insertMessage(newMessage);
-
-  print("📥 [FG] Message stored from $sender");
-
-  // Show local notification
-  RemoteNotification? notification = message.notification;
-  AndroidNotification? android = message.notification?.android;
-
-  if (notification != null && android != null) {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'default_channel_id', // channel id
-      'Default Channel', // channel name
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-
-    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
-
-    await flutterLocalNotificationsPlugin.show(
-      notification.hashCode,
-      notification.title ?? 'New Message from $sender',
-      notification.body ?? text,
-      platformDetails,
-      payload: 'chat', // optional, can pass data for handling on tap
-    );
-  }
-});
-
-    // Handle user tapping on notification when app is in background but opened via notification
-   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  print('📲 Notification clicked with data: ${message.data}');
-
-  final senderEmail = message.data['sender'];
-  if (senderEmail != null) {
-   
-    globalNavigatorKey.currentState?.push(
-      MaterialPageRoute(
-        builder: (_) => ChatPage(user: widget.user), 
-      ),
-    );
-  }
-});
 
   }
 

@@ -1,6 +1,12 @@
 import 'dart:convert';
+import 'package:basic_chat_app/data/models/user_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user_model.dart';
+
+
+final pairedUserStorageProvider = Provider<PairedUserStorageService>((ref) {
+  return PairedUserStorageService();
+});
 
 class PairedUserStorageService {
   static const _key = 'paired_users';
@@ -17,6 +23,7 @@ class PairedUserStorageService {
 
     if (!users.any((u) => u.fcmToken == user.fcmToken)) {
       users.add(user);
+      print(user.toJson());
       final updated = users.map((u) => jsonEncode(u.toJson())).toList();
       await prefs.setStringList(_key, updated);
     }
