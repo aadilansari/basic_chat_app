@@ -1,5 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/services/location_service.dart';
+import 'package:basic_chat_app/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -90,7 +93,12 @@ Future<void> _loadLocation() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title:  'Location: Map View'),
+      appBar: CustomAppBar(title:  'Location: Map View',
+         onBack: () =>  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const MainNavigationPage()),
+                  ),
+      ),
       body: currentPosition == null
           ? const Center(child: CircularProgressIndicator())
           : FlutterMap(

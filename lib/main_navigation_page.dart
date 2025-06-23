@@ -1,7 +1,6 @@
 import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/feature/chat/view/user_list_page.dart';
 import 'package:basic_chat_app/feature/map/view/map_page.dart';
-import 'package:basic_chat_app/feature/qr/view/pairing_page.dart';
 import 'package:basic_chat_app/feature/qr/widget/show_qr_page.dart';
 import 'package:basic_chat_app/provider/bottom_nav_provider.dart';
 import 'package:basic_chat_app/settings_page.dart';
@@ -31,6 +30,10 @@ class _MainNavigationPageState extends ConsumerState<MainNavigationPage> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+     ref.read(bottomNavProvider.notifier).state = 0;
+  });
+   
   }
 
   @override

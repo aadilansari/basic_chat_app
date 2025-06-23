@@ -82,9 +82,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               child: Column(
                 children: [
                   // Image section (replace with your own asset)
-                  Image.asset(
-                    'assets/icon/icon.png',
-                    height: 120,
+                  Hero(
+                    
+                    tag: 'profile-avatar',
+                    child: Image.asset(
+                      'assets/icon/icon.png',
+                      height: 120,
+                    ),
                   ),
               
                   const SizedBox(height: 24),

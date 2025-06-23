@@ -1,147 +1,117 @@
+// ignore_for_file: avoid_print
 
 import 'package:basic_chat_app/data/models/user_model.dart';
-import 'package:basic_chat_app/data/repository/auth_repository.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
-import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
-import 'package:basic_chat_app/feature/chat/view/user_list_page.dart';
 import 'package:basic_chat_app/main.dart';
 import 'package:basic_chat_app/main_navigation_page.dart';
-import 'package:basic_chat_app/provider/notification_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/message_model.dart';
 import 'database_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 class NotificationService {
   final _firebaseMessaging = FirebaseMessaging.instance;
   final _db = DatabaseService();
+  final List<String> _recentHashes = [];
 
   Future<void> initialize() async {
-    // Request notification permissions (iOS, Android 13+)
     final settings = await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
-    print('Notification permission status: ${settings.authorizationStatus}');
+    print('🔒 Notification permission: ${settings.authorizationStatus}');
 
-    // Get device token
     final token = await _firebaseMessaging.getToken();
-    print('FCM Device Token: $token');
+    print('📲 FCM Token: $token');
+  }
 
-    // TODO: Send this token to your backend or save it as needed
+  /// Creates a hash signature for a message based on sender+message+timestamp(rounded)
+  String _generateMessageHash(MessageModel message) {
+    final key = "${message.sender}|${message.message}|${message.timestamp.millisecondsSinceEpoch ~/ 1000}";
+    return sha256.convert(utf8.encode(key)).toString();
+  }
+
+  bool _isDuplicateHash(String hash) {
+    return _recentHashes.contains(hash);
+  }
+
+  void _addHash(String hash) {
+    _recentHashes.add(hash);
+    if (_recentHashes.length > 5) {
+      _recentHashes.removeAt(0); // keep only latest 5
+    }
   }
 
   void setupForegroundListener() {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('📨 Notification clicked: ${message.data}');
+      final senderEmail = message.data['sender'];
+      if (senderEmail != null) {
+        globalNavigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (_) => MainNavigationPage()),
+        );
+      }
+    });
 
- FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  print('📲 Notification clicked with data: ${message.data}');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print('🔔 Foreground notification: ${message.data}');
 
-  final senderEmail = message.data['sender'];
-  if (senderEmail != null) {
-   
-    globalNavigatorKey.currentState?.push(
-      MaterialPageRoute(
-        builder: (_) => MainNavigationPage(), 
-      ),
-    );
-  }
-});
+      final sender = message.data['sender'] ?? 'Unknown';
+      final senderEmail = message.data['email'] ?? '';
+      final text = message.data['message'] ?? '';
+      final phone = message.data['phone'] ?? '';
+      final fcmToken = message.data['fcm'] ?? '';
 
+      final prefs = await SharedPreferences.getInstance();
+      final currentUserEmail =
+          prefs.getString('user_email') ?? 'unknown_user@example.com';
 
-   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-  print('🔔 Received foreground message: ${message.data}');
+      final newMessage = MessageModel(
+        sender: senderEmail,
+        receiver: currentUserEmail,
+        message: text,
+        timestamp: DateTime.now(),
+      );
 
-  final sender = message.data['sender'] ?? 'Unknown';
-  final senderEmail = message.data['email']?? '';
-  final text = message.data['message'] ?? '';
+      final hash = _generateMessageHash(newMessage);
+      if (_isDuplicateHash(hash)) {
+        debugPrint("⛔ Duplicate message blocked via hash check");
+        return;
+      }
 
-  print("📥 Message from: $sender | $text");
+      _addHash(hash);
+      await _db.insertMessage(newMessage);
 
-  // Get logged-in user email
-  final prefs = await SharedPreferences.getInstance();
-  final currentUserEmail = prefs.getString('user_email') ?? 'unknown_user@example.com';
+      final pairedUsers = await PairedUserStorageService().getUsers();
+      final alreadyPaired = pairedUsers.any((user) => user.email == senderEmail);
 
-  final newMessage = MessageModel(
-    sender: senderEmail,
-    receiver: currentUserEmail,
-    message: text,
-    timestamp: DateTime.now(),
-  );
-  print("check time++++++++");
-    print( text);
-  print( newMessage.timestamp);
+      if (!alreadyPaired) {
+        final newUser = UserModel(
+          email: senderEmail,
+          name: sender,
+          fcmToken: fcmToken,
+          country: '',
+          phone: phone,
+          password: '',
+        );
+        await PairedUserStorageService().addUser(newUser);
+        print("✅ Paired new user: ${newUser.email}");
+      }
 
-  // Save to SQLite
- final exists = await _db.messageExists(newMessage);
-if (!exists) {
-  await _db.insertMessage(newMessage);
-  print("✅ Message stored.");
-} else {
-  print("⛔ Duplicate message skipped.");
-}
-
-
-//   final allMessages = await _db.getMessages(sender, currentUserEmail);
-// for (var msg in allMessages) {
-//   print("📦 [DB] ${msg.sender} ➡ ${msg.receiver}: ${msg.message}");
-// }
-
-   // ✅ Add sender to paired users if not already added
-  final pairedUsers = await PairedUserStorageService().getUsers();
-  final alreadyPaired = pairedUsers.any((user) => user.email == senderEmail);
-
-  if (!alreadyPaired) {
-    final newUser = UserModel(
-      email: senderEmail,
-      name: sender, 
-      fcmToken: message.data['fcm'] ?? '', 
-      country: '',
-      phone:  message.data['phone'] ?? '', password: '',
-    );
-
-    await PairedUserStorageService().addUser(newUser);
-
-
-    print("✅ Added new user to paired list: ${newUser.email}");
-  }
-
-
-  // Show SnackBar
-  final context = globalNavigatorKey.currentContext;
-  if (context != null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(" New message from $sender")),
-    );
-  }
-
-  // Optionally show local notification if available in message
-  // final notification = message.notification;
-  // final android = message.notification?.android;
-
-  // if (notification != null && android != null) {
-  //   const androidDetails = AndroidNotificationDetails(
-  //     'default_channel_id',
-  //     'Default Channel',
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //     ticker: 'ticker',
-  //   );
-
-  //   const platformDetails = NotificationDetails(android: androidDetails);
-
-  //   await flutterLocalNotificationsPlugin.show(
-  //     notification.hashCode,
-  //     notification.title ?? 'New Message from $sender',
-  //     notification.body ?? text,
-  //     platformDetails,
-  //     payload: 'chat',
-  //   );
-  // }
-});
-
+      final context = globalNavigatorKey.currentContext;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("📩 New message from $sender"),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      }
+    });
   }
 }

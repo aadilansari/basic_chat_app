@@ -2,7 +2,7 @@
 
 import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
-import 'package:basic_chat_app/core/widgets/theme_toggle_button.dart';
+import 'package:basic_chat_app/main_navigation_page.dart';
 import 'package:basic_chat_app/provider/bottom_nav_provider.dart';
 import 'package:basic_chat_app/provider/locale_provider.dart';
 import 'package:basic_chat_app/provider/theme_provider.dart';
@@ -21,7 +21,12 @@ class SettingsPage extends ConsumerWidget {
     final isArabic = ref.watch(localeProvider).languageCode == 'ar';
 
     return Scaffold(
-      appBar: CustomAppBar(title: t.translate('settings')),
+      appBar: CustomAppBar(title: t.translate('settings'),
+      onBack: () =>  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const MainNavigationPage()),
+                  ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

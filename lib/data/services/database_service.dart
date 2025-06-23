@@ -58,19 +58,19 @@ class DatabaseService {
     return maps.map((e) => MessageModel.fromMap(e)).toList();
   }
 
-  Future<bool> messageExists(MessageModel message) async {
-  final dbClient = await db;
-  final result = await dbClient.query(
-    'messages',
-    where: 'sender = ? AND receiver = ? AND message = ? AND timestamp = ?',
-    whereArgs: [
-      message.sender,
-      message.receiver,
-      message.message,
-      message.timestamp.toIso8601String(),
-    ],
-  );
-  return result.isNotEmpty;
-}
+//   Future<bool> messageExists(MessageModel message) async {
+//   final dbClient = await db;
+//   final result = await dbClient.query(
+//     'messages',
+//     where: 'sender = ? AND receiver = ? AND message = ? AND timestamp = ?',
+//     whereArgs: [
+//       message.sender,
+//       message.receiver,
+//       message.message,
+//       message.timestamp.toIso8601String(),
+//     ],
+//   );
+//   return result.isNotEmpty;
+// }
 
 }

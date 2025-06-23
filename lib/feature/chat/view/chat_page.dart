@@ -1,17 +1,13 @@
+import 'dart:async';
+
 import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
-import 'package:basic_chat_app/data/models/message_model.dart';
 import 'package:basic_chat_app/data/models/user_model.dart';
-import 'package:basic_chat_app/data/services/database_service.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/chat/viewmodel/chat_viewmodel.dart';
-import 'package:basic_chat_app/main.dart';
-import 'package:basic_chat_app/provider/notification_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   final UserModel user;
@@ -24,13 +20,19 @@ class ChatPage extends ConsumerStatefulWidget {
 
 class _ChatPageState extends ConsumerState<ChatPage> {
   final msgController = TextEditingController();
-
+  final ScrollController _scrollController = ScrollController();
 
   late final FirebaseMessaging messaging;
 
   @override
   void initState() {
     super.initState();
+
+    Timer.periodic(const Duration(seconds: 2), (_) {
+      if (mounted) {
+        ref.read(chatProvider(widget.user).notifier).refreshMessages();
+      }
+    });
   }
 
   @override
@@ -41,20 +43,43 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     });
   }
 
+  void scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant ChatPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    scrollToBottom();
+  }
+
   @override
   Widget build(BuildContext context) {
     final myUser = ref.watch(authProvider);
     final messages = ref.watch(chatProvider(widget.user));
 
+    // Auto-scroll when new messages appear
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollToBottom();
+    });
+
     return Scaffold(
       appBar: CustomAppBar(
-  title: 'Chat with ${widget.user.name}',
-
-),
+        title: 'Chat with ${widget.user.name}',
+      ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               itemCount: messages.length,
               padding: const EdgeInsets.all(8),
               itemBuilder: (_, index) {
@@ -65,7 +90,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     DateFormat('MMM d, h:mm a').format(msg.timestamp);
 
                 return Align(
-                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment:
+                      isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 6),
                     padding: const EdgeInsets.all(12),
@@ -74,8 +100,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
-                      crossAxisAlignment:
-                          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                      crossAxisAlignment: isMe
+                          ? CrossAxisAlignment.end
+                          : CrossAxisAlignment.start,
                       children: [
                         Text(
                           msg.message,
@@ -120,6 +147,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                           .read(chatProvider(widget.user).notifier)
                           .sendMessage(text);
                       msgController.clear();
+                      scrollToBottom(); // scroll after sending
                     }
                   },
                 ),
@@ -129,5 +157,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    msgController.dispose();
+    super.dispose();
   }
 }

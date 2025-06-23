@@ -63,9 +63,12 @@ class _UserListPageState extends ConsumerState<UserListPage> {
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage("assets/icon/icon.png"),
+                  Hero(
+                     tag: 'profile-avatar',
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundImage: AssetImage("assets/icon/icon.png"),
+                    ),
                   ),
                 
                 ],

@@ -1,9 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:path_provider/path_provider.dart';
  import 'package:flutter/services.dart' show rootBundle;
 
 class PushNotificationService {

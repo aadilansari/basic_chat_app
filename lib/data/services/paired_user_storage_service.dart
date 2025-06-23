@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:basic_chat_app/data/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

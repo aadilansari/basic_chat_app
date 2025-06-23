@@ -4,7 +4,6 @@ import 'package:basic_chat_app/core/widgets/custom_textfield.dart';
 import 'package:basic_chat_app/core/widgets/password_textfield.dart';
 import 'package:basic_chat_app/data/models/user_model.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
-import 'package:basic_chat_app/feature/home/view/home_page.dart';
 import 'package:basic_chat_app/main_navigation_page.dart';
 import 'package:basic_chat_app/provider/country_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

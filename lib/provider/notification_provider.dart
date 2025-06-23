@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/services/notification_service.dart';
@@ -29,7 +31,7 @@ Future<void> initializeLocalNotifications() async {
     // Get the FCM token and print it (send to your backend or share with sender)
     messaging.getToken().then((token) {
       print('🔑 FCM Token: $token');
-      // TODO: Save/send token to backend or relevant user logic
+     
     });
 
     NotificationSettings settings = await messaging.requestPermission(
