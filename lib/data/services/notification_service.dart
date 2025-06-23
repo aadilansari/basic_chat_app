@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:basic_chat_app/data/models/user_model.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';

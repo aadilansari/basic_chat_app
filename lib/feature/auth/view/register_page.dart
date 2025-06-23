@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/core/widgets/custom_textfield.dart';

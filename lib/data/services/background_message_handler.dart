@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:basic_chat_app/data/models/message_model.dart';
 import 'package:basic_chat_app/data/services/database_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

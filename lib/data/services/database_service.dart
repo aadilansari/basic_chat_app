@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, depend_on_referenced_packages
+
 import 'package:basic_chat_app/data/models/message_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
