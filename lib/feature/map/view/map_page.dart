@@ -38,7 +38,7 @@ Future<void> _loadLocation() async {
       final lng = position.longitude;
 
       if (lat == null || lng == null) {
-        print("❌ Location data is null");
+        print("Location data is null");
         return;
       }
 
@@ -48,20 +48,20 @@ Future<void> _loadLocation() async {
       });
 
       _createBoundary(latlng);
-      mapController.move(latlng, 15.0); // Zoom to location
+      mapController.move(latlng, 15.0); 
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Location permission is required to show map")),
       );
     }
   } catch (e) {
-    print("❌ Location error: $e");
+    print("Location error: $e");
   }
 }
 
 
   void _createBoundary(LatLng center) {
-    const delta = 0.009; // ~1km lat/lng = ~2km square
+    const delta = 0.009; 
 
     final corners = [
       LatLng(center.latitude - delta, center.longitude - delta),

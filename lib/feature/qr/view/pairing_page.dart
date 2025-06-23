@@ -1,6 +1,5 @@
 import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
-import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/qr/widget/scan_qr_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,8 +33,6 @@ class _PairingPageState extends ConsumerState<PairingPage> {
 
   void handleScannedUser(UserModel user) async {
     await PairedUserStorageService().addUser(user);
-   //ref.read(pairedUserProvider.notifier).addUser(user);
-
     setState(() {
       scannedUser = user;
     });
@@ -44,7 +41,6 @@ class _PairingPageState extends ConsumerState<PairingPage> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    final currentUser = ref.watch(authProvider);
 
     return Scaffold(
       appBar: CustomAppBar(title: t.translate('paired_user')),

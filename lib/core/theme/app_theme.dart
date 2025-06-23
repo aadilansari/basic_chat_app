@@ -10,12 +10,12 @@ class AppTheme {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
-      selectedItemColor: Colors.blueAccent, // More vibrant blue
+      selectedItemColor: Colors.blueAccent, 
       unselectedItemColor: Colors.grey[600],
-      elevation: 12, // Stronger shadow
+      elevation: 12, 
       showSelectedLabels: true,
       showUnselectedLabels: true,
-      type: BottomNavigationBarType.fixed, // Better for 4+ items
+      type: BottomNavigationBarType.fixed, 
       selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
       unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
       landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
@@ -30,8 +30,8 @@ class AppTheme {
       bodyLarge: TextStyle(fontSize: 16, color: Colors.white),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: Colors.grey[850], // Slightly lighter than scaffold
-      selectedItemColor: Colors.blueAccent[200], // Brighter accent
+      backgroundColor: Colors.grey[850], 
+      selectedItemColor: Colors.blueAccent[200],
       unselectedItemColor: Colors.grey[400],
       elevation: 12,
       showSelectedLabels: true,

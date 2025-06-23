@@ -31,7 +31,6 @@ class SettingsPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            // 🔄 Theme toggle
             SwitchListTile(
               title: Text(t.translate('dark_mode')),
               secondary: Icon(isDark ? Icons.dark_mode : Icons.light_mode),
@@ -42,7 +41,6 @@ class SettingsPage extends ConsumerWidget {
               },
             ),
         
-            // 🌐 Language toggle (example: English <-> Arabic)
             SwitchListTile(
               title: Text(t.translate('language')),
               secondary: const Icon(Icons.language),
@@ -53,7 +51,6 @@ class SettingsPage extends ConsumerWidget {
               },
             ),
         
-            // 🔐 Logout action (shown with switch-style visual, but taps instead)
             ListTile(
               leading: const Icon(Icons.logout),
               title: Text(t.translate('logout')),

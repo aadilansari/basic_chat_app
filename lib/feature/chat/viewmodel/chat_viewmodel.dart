@@ -55,12 +55,11 @@ class ChatViewModel extends StateNotifier<List<MessageModel>> {
 
   Future<void> loadMessages() async {
      state = await db.getMessages(currentUserEmail, partnerUser.email);
-   // state = await db.getMessages(currentUserEmail, partnerUser.name);
   }
 
 
  void refreshMessages() async {
-  await loadMessages(); // just reloads from DB
+  await loadMessages(); 
 }
   Future<void> sendMessage(String msg) async {
     final message = MessageModel(

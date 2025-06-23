@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false, // ✅ Prevent default back icon
+      automaticallyImplyLeading: false,
       leading: hideBackButton
           ? null
           : IconButton(

@@ -28,7 +28,7 @@ class ShowQrPage extends ConsumerWidget {
                Text(t.translate('your_qr_code'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400 ),),
                 const SizedBox(height: 16),
                 QrImageView(
-                  data: jsonEncode(user.toJson()), // 👈 full user info
+                  data: jsonEncode(user.toJson()), 
                   size: 250,
                   version: QrVersions.auto,
                 ),

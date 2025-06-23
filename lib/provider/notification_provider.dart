@@ -28,7 +28,6 @@ Future<void> initializeLocalNotifications() async {
      final FirebaseMessaging messaging;
        messaging = FirebaseMessaging.instance;
 
-    // Get the FCM token and print it (send to your backend or share with sender)
     messaging.getToken().then((token) {
       print('🔑 FCM Token: $token');
      
@@ -40,5 +39,5 @@ Future<void> initializeLocalNotifications() async {
       sound: true,
     );
 
-    print('🔔 User granted permission: ${settings.authorizationStatus}');
+    print('User granted permission: ${settings.authorizationStatus}');
   }

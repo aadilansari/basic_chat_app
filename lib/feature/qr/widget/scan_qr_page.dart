@@ -26,8 +26,6 @@ class _ScanQrPageState extends ConsumerState<ScanQrPage> {
     try {
       final json = jsonDecode(code);
       final user = UserModel.fromJson(json);
-
-      // Use ref here safely
        await PairedUserStorageService().addUser(user);
 
       if (context.mounted) {

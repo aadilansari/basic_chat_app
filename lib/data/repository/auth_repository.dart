@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,102 +10,76 @@ import '../models/user_model.dart';
 class AuthRepository {
   static const String userKey = 'user_data';
   static const String fileName = 'user_backup.json';
-  static const String appFolderName = 'basic_chat_app'; // Replace with your app name
+  static const String appFolderName = 'basic_chat_app'; 
 
-  // DUAL STORAGE STRATEGY:
-  // 1. SharedPreferences (primary) - fast access, cleared on uninstall
-  // 2. External storage (backup) - survives uninstall
-
-  /// Save user to both SharedPreferences and persistent storage
   Future<void> saveUser(UserModel user) async {
     try {
-      // Primary: Save to SharedPreferences (fast access)
       await _saveToSharedPrefs(user);
-      
-      // Backup: Save to persistent storage (survives uninstall)
       await _saveToPersistentStorage(user);
-      
-      print('✅ User saved to both local and persistent storage');
+      print('User saved to both local and persistent storage');
     } catch (e) {
-      print('❌ Error saving user: $e');
+      print('Error saving user: $e');
       rethrow;
     }
   }
 
-  /// Get user with fallback strategy
   Future<UserModel?> getUser() async {
     try {
-      // Try SharedPreferences first (faster)
       UserModel? user = await _getUserFromSharedPrefs();
       
       if (user != null) {
         print('📱 User loaded from SharedPreferences');
         return user;
       }
-
-      // Fallback: Try persistent storage (in case app was reinstalled)
       user = await _getUserFromPersistentStorage();
       
       if (user != null) {
-        print('💾 User restored from persistent storage');
-        // Restore to SharedPreferences for future fast access
+        print('User restored from persistent storage');
         await _saveToSharedPrefs(user);
         return user;
       }
 
-      print('👤 No user data found');
+      print('No user data found');
       return null;
     } catch (e) {
-      print('❌ Error getting user: $e');
+      print('Error getting user: $e');
       return null;
     }
   }
 
-  /// Clear user from both storages
   Future<void> clearUser() async {
     try {
-      // Clear from SharedPreferences
       await _clearFromSharedPrefs();
-      
-      // Clear from persistent storage
       await _clearFromPersistentStorage();
-      
-      print('🗑️ User data cleared from both storages');
+      print('User data cleared from both storages');
     } catch (e) {
-      print('❌ Error clearing user: $e');
+      print('Error clearing user: $e');
     }
   }
 
-  /// Check if user exists in either storage
   Future<bool> hasUser() async {
     try {
-      // Check SharedPreferences first
       if (await _hasUserInSharedPrefs()) {
         return true;
       }
-      
-      // Check persistent storage
       return await _hasUserInPersistentStorage();
     } catch (e) {
-      print('❌ Error checking user existence: $e');
+      print('Error checking user existence: $e');
       return false;
     }
   }
 
-  /// Sync data between storages (useful for data recovery)
   Future<void> syncStorages() async {
     try {
       final user = await getUser();
       if (user != null) {
         await saveUser(user);
-        print('🔄 Storage sync completed');
+        print('Storage sync completed');
       }
     } catch (e) {
-      print('❌ Error syncing storages: $e');
+      print('Error syncing storages: $e');
     }
   }
-
-  // ===== SHARED PREFERENCES METHODS =====
 
   Future<void> _saveToSharedPrefs(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
@@ -126,8 +102,6 @@ class AuthRepository {
     final prefs = await SharedPreferences.getInstance();
     return prefs.containsKey(userKey);
   }
-
-  // ===== PERSISTENT STORAGE METHODS =====
 
   Future<String?> get _persistentFilePath async {
     try {
@@ -155,24 +129,19 @@ class AuthRepository {
 
   Future<Directory?> _getPublicDirectory() async {
     try {
-      // Try Downloads directory first
       final downloadDir = Directory('/storage/emulated/0/Download');
       if (await downloadDir.exists()) {
         return downloadDir;
       }
-
-      // Fallback to Documents
       final documentsDir = Directory('/storage/emulated/0/Documents');
       if (await documentsDir.exists()) {
         return documentsDir;
       }
 
-      // Last resort: External storage root
       final externalDir = Directory('/storage/emulated/0');
       if (await externalDir.exists()) {
         return externalDir;
       }
-
       return null;
     } catch (e) {
       print('Error getting public directory: $e');
@@ -182,15 +151,12 @@ class AuthRepository {
 
   Future<bool> _requestStoragePermission() async {
     if (!Platform.isAndroid) return true;
-
     try {
-      // Check if permission is already granted
       if (await Permission.storage.isGranted || 
           await Permission.manageExternalStorage.isGranted) {
         return true;
       }
 
-      // Request permission
       var status = await Permission.manageExternalStorage.request();
       if (!status.isGranted) {
         status = await Permission.storage.request();
@@ -207,7 +173,7 @@ class AuthRepository {
     try {
       final path = await _persistentFilePath;
       if (path == null) {
-        print('⚠️ Could not get persistent storage path');
+        print('Could not get persistent storage path');
         return;
       }
 
@@ -215,9 +181,9 @@ class AuthRepository {
       final jsonData = jsonEncode(user.toJson());
       await file.writeAsString(jsonData);
       
-      print('💾 User backed up to: $path');
+      print('User backed up to: $path');
     } catch (e) {
-      print('❌ Error saving to persistent storage: $e');
+      print('Error saving to persistent storage: $e');
     }
   }
 
@@ -232,7 +198,7 @@ class AuthRepository {
       final jsonData = await file.readAsString();
       return UserModel.fromJson(jsonDecode(jsonData));
     } catch (e) {
-      print('❌ Error getting user from persistent storage: $e');
+      print('Error getting user from persistent storage: $e');
       return null;
     }
   }
@@ -247,7 +213,7 @@ class AuthRepository {
         await file.delete();
       }
     } catch (e) {
-      print('❌ Error clearing persistent storage: $e');
+      print('Error clearing persistent storage: $e');
     }
   }
 
@@ -259,14 +225,13 @@ class AuthRepository {
       final file = File(path);
       return await file.exists();
     } catch (e) {
-      print('❌ Error checking persistent storage: $e');
+      print('Error checking persistent storage: $e');
       return false;
     }
   }
 
   // ===== UTILITY METHODS =====
 
-  /// Get storage information for debugging
   Future<Map<String, dynamic>> getStorageInfo() async {
     return {
       'hasSharedPrefs': await _hasUserInSharedPrefs(),
@@ -277,7 +242,6 @@ class AuthRepository {
     };
   }
 
-  /// Force restore from persistent storage
   Future<UserModel?> restoreFromBackup() async {
     try {
       final user = await _getUserFromPersistentStorage();
@@ -287,7 +251,7 @@ class AuthRepository {
       }
       return user;
     } catch (e) {
-      print('❌ Error restoring from backup: $e');
+      print('Error restoring from backup: $e');
       return null;
     }
   }

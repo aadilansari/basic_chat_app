@@ -24,10 +24,10 @@ class NotificationService {
       badge: true,
       sound: true,
     );
-    print('🔒 Notification permission: ${settings.authorizationStatus}');
+    print('Notification permission: ${settings.authorizationStatus}');
 
     final token = await _firebaseMessaging.getToken();
-    print('📲 FCM Token: $token');
+    print('FCM Token: $token');
   }
 
   /// Creates a hash signature for a message based on sender+message+timestamp(rounded)
@@ -43,13 +43,13 @@ class NotificationService {
   void _addHash(String hash) {
     _recentHashes.add(hash);
     if (_recentHashes.length > 5) {
-      _recentHashes.removeAt(0); // keep only latest 5
+      _recentHashes.removeAt(0);
     }
   }
 
   void setupForegroundListener() {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('📨 Notification clicked: ${message.data}');
+      print('Notification clicked: ${message.data}');
       final senderEmail = message.data['sender'];
       if (senderEmail != null) {
         globalNavigatorKey.currentState?.push(
@@ -59,7 +59,7 @@ class NotificationService {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print('🔔 Foreground notification: ${message.data}');
+      print('Foreground notification: ${message.data}');
 
       final sender = message.data['sender'] ?? 'Unknown';
       final senderEmail = message.data['email'] ?? '';
@@ -80,7 +80,7 @@ class NotificationService {
 
       final hash = _generateMessageHash(newMessage);
       if (_isDuplicateHash(hash)) {
-        debugPrint("⛔ Duplicate message blocked via hash check");
+        debugPrint("Duplicate message blocked via hash check");
         return;
       }
 
@@ -100,14 +100,14 @@ class NotificationService {
           password: '',
         );
         await PairedUserStorageService().addUser(newUser);
-        print("✅ Paired new user: ${newUser.email}");
+        print("Paired new user: ${newUser.email}");
       }
 
       final context = globalNavigatorKey.currentContext;
       if (context != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("📩 New message from $sender"),
+            content: Text("New message from $sender"),
             backgroundColor: Colors.blue,
           ),
         );

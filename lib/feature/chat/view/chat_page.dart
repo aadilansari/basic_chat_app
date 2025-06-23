@@ -66,7 +66,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final myUser = ref.watch(authProvider);
     final messages = ref.watch(chatProvider(widget.user));
 
-    // Auto-scroll when new messages appear
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom();
     });
@@ -147,7 +146,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                           .read(chatProvider(widget.user).notifier)
                           .sendMessage(text);
                       msgController.clear();
-                      scrollToBottom(); // scroll after sending
+                      scrollToBottom();
                     }
                   },
                 ),

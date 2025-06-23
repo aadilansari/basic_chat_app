@@ -14,7 +14,7 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
 
   final newMessage = MessageModel(
     sender: senderEmail,
-    receiver: currentUserEmail, // Replace with actual login logic
+    receiver: currentUserEmail, 
     message: text,
     timestamp: DateTime.now(),
   );
@@ -22,6 +22,6 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   final db = DatabaseService();
   await db.insertMessage(newMessage);
 
-  print("📥 [BG] Message stored from $sender");
+  print("[BG] Message stored from $sender");
 }
 

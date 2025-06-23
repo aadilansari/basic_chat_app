@@ -13,7 +13,6 @@ class PushNotificationService {
 
 Future<String> _getAccessTokenFromFile() async {
   try {
-    // Load the JSON content from the bundled asset
     final jsonString = await rootBundle.loadString('assets/service_account.json');
 
     final accountCredentials = ServiceAccountCredentials.fromJson(
@@ -27,7 +26,7 @@ Future<String> _getAccessTokenFromFile() async {
     client.close();
     return accessToken;
   } catch (e) {
-    print("❌ Error getting access token from asset: $e");
+    print("Error getting access token from asset: $e");
     rethrow;
   }
 }
@@ -74,12 +73,12 @@ Future<String> _getAccessTokenFromFile() async {
       );
 
       if (response.statusCode == 200) {
-        print("✅ Push notification sent.");
+        print("Push notification sent.");
       } else {
-        print("❌ Failed to send notification: ${response.statusCode} ${response.body}");
+        print("Failed to send notification: ${response.statusCode} ${response.body}");
       }
     } catch (e) {
-      print("❌ Error sending push notification: $e");
+      print("Error sending push notification: $e");
     }
   }
 }

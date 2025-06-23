@@ -1,5 +1,4 @@
 import 'package:basic_chat_app/core/localization/app_localization.dart';
-import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/services/background_message_handler.dart';
 import 'package:basic_chat_app/feature/auth/view/login_page.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
@@ -53,43 +52,6 @@ class MyApp extends ConsumerWidget {
     : const LoginPage(),
 
       debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class ThemeTogglePage extends ConsumerWidget {
-  const ThemeTogglePage({super.key});
-
-  
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
-    final t = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: CustomAppBar(
-  title: t.translate('app_title'),
-  hideBackButton: true,
-  onBack: () {
-  },
-),
-     
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton.icon(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-            label: Text(t.translate('dark_mode')),
-            onPressed: () => toggleTheme(ref),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () => switchLanguage(ref),
-            child: Text(t.translate('language')),
-          ),
-        ],
-      ),
     );
   }
 }

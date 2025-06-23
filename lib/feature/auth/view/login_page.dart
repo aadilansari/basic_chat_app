@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
@@ -159,7 +157,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               
                   const SizedBox(height: 16),
               
-                  // Sign up text
                   GestureDetector(
                       onTap: () {
                   Navigator.push(
