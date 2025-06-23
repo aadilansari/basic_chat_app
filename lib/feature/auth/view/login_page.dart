@@ -1,7 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:ffi';
-
 import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/core/widgets/custom_textfield.dart';
 import 'package:basic_chat_app/core/widgets/password_textfield.dart';
@@ -12,6 +8,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -74,35 +72,45 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
      final t = AppLocalizations.of(context);
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-               Text(
-                t.translate('login'),
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Card(
-                      elevation: 5,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+      backgroundColor: const Color(0xffF6F7FB),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // Image section (replace with your own asset)
+                  Image.asset(
+                    'assets/icon/icon.png',
+                    height: 120,
+                  ),
+              
+                  const SizedBox(height: 24),
+              
+                   Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                     t.translate('login'),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(height: 16),
-                            CustomTextField(
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Please sign in to continue.",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+              
+                 CustomTextField(
                               controller: emailCtrl,
                               label: t.translate('email'),
                               hintText: t.translate('enter_your_email'),
@@ -123,30 +131,55 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   ? t.translate('min_6_characters')
                                   : null,
                             ),
-                            const SizedBox(height: 24),
-                            ElevatedButton(
-                              onPressed: _isLoading ? null : _submit,
-                              child: _isLoading
-                                  ? const CircularProgressIndicator()
-                                  :  Text(t.translate('login')),
-                            ),
-                          ],
+          
+               
+                  const SizedBox(height: 24),
+              
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
+                     onPressed: _isLoading ? null : _submit,
+                      child: _isLoading
+                                  ? const CircularProgressIndicator()
+                                  : Text(t.translate('login'), style: TextStyle(color: Colors.white),),
                     ),
                   ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
+              
+                  const SizedBox(height: 16),
+              
+                  // Sign up text
+                  GestureDetector(
+                      onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const RegisterPage()),
                   );
                 },
-                child:  Text(t.translate('dont_have_account')),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children:  [
+                       
+                        Text(
+                          t.translate('dont_have_account'),
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

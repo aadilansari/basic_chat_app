@@ -60,7 +60,7 @@ class _PairingPageState extends ConsumerState<PairingPage> {
                     'name': currentUser.name,
                     'email': currentUser.email,
                   }),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400 ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -95,7 +95,7 @@ class _PairingPageState extends ConsumerState<PairingPage> {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.qr_code_scanner),
-              label: Text(t.translate('scan_qr')),
+              label: Text(t.translate('scan_qr'), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400 )),
               onPressed: () {
                 Navigator.push(
                   context,

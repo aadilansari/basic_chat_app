@@ -24,7 +24,7 @@ class ShowQrPage extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                        
               children: [
-                const Text("Your QR Code (includes name/email/token)"),
+               Text("Your QR Code", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400 ),),
                 const SizedBox(height: 16),
                 QrImageView(
                   data: jsonEncode(user.toJson()), // 👈 full user info
@@ -34,7 +34,7 @@ class ShowQrPage extends ConsumerWidget {
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.qr_code_scanner),
-                  label: const Text("Scan to Pair with User"),
+                  label: const Text("Scan to Pair with User",style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400 )),
                   onPressed: () {
                     Navigator.push(
                       context,

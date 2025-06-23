@@ -65,7 +65,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: AssetImage("assets/profile.png"),
+                    backgroundImage: AssetImage("assets/icon/icon.png"),
                   ),
                 
                 ],
