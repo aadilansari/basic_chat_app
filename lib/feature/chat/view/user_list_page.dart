@@ -35,7 +35,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
 
     return Scaffold(
   appBar:CustomAppBar(
-  title: 'Home',
+  title: t.translate('home'),
   hideBackButton: true,
 ),
   body: Column(
@@ -104,10 +104,10 @@ class _UserListPageState extends ConsumerState<UserListPage> {
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Divider(),
       ),
-      const Padding(
+       Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: Text(
-          "Chat list",
+         t.translate('chat_list'),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),

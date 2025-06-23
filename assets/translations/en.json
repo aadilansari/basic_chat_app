@@ -45,5 +45,12 @@
   "paired_with_user": "Paired with {name} ({email})",
   "scan_to_pair": "Scan QR code to pair with a device",
   "pairing_successful": "Successfully paired with {name}",
- "scan_qr":"Scan qr"
+  "home":"Home",
+ "chat_list":"Chat list",
+  "location": "Location",
+  "map_view": "Map View",
+  "invalid_qr": "Invalid QR Code",
+  "scan_qr": "Scan QR Code",
+  "please_login": "Please log in first",
+  "scan_to_pair_user": "Scan to pair with user"
 }

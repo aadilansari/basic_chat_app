@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/qr/view/pairing_page.dart';
@@ -13,18 +14,18 @@ class ShowQrPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider);
-
+     final t = AppLocalizations.of(context);
     return Scaffold(
-      appBar: CustomAppBar(title:'QR Actions'),
+      appBar: CustomAppBar(title: t.translate('qr_actions')),
       body: user == null
-          ? const Center(child: Text("Please log in first"))
+          ?  Center(child: Text(t.translate('please_login')))
           : Center(
             child: Column(
              mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                        
               children: [
-               Text("Your QR Code", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400 ),),
+               Text(t.translate('your_qr_code'), style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400 ),),
                 const SizedBox(height: 16),
                 QrImageView(
                   data: jsonEncode(user.toJson()), // 👈 full user info
@@ -34,7 +35,7 @@ class ShowQrPage extends ConsumerWidget {
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.qr_code_scanner),
-                  label: const Text("Scan to Pair with User",style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400 )),
+                  label:  Text(t.translate('scan_to_pair_user'),style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400 )),
                   onPressed: () {
                     Navigator.push(
                       context,

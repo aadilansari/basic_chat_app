@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:basic_chat_app/core/localization/app_localization.dart';
 import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/services/location_service.dart';
 import 'package:basic_chat_app/main_navigation_page.dart';
@@ -92,8 +93,9 @@ Future<void> _loadLocation() async {
 
   @override
   Widget build(BuildContext context) {
+     final t = AppLocalizations.of(context);
     return Scaffold(
-      appBar: CustomAppBar(title:  'Location: Map View',
+      appBar: CustomAppBar(title:  t.translate('location'),
          onBack: () =>  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => const MainNavigationPage()),

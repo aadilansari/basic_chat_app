@@ -52,18 +52,7 @@ class _PairingPageState extends ConsumerState<PairingPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (currentUser != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Text(
-                  t.translate('current_user', params: {
-                    'name': currentUser.name,
-                    'email': currentUser.email,
-                  }),
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400 ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+          
            scannedUser == null
     ? Padding(
         padding: const EdgeInsets.all(16.0),
