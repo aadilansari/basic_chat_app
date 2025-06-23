@@ -1,8 +1,11 @@
 
 import 'package:basic_chat_app/data/models/user_model.dart';
+import 'package:basic_chat_app/data/repository/auth_repository.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
+import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/chat/view/user_list_page.dart';
 import 'package:basic_chat_app/main.dart';
+import 'package:basic_chat_app/main_navigation_page.dart';
 import 'package:basic_chat_app/provider/notification_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +45,7 @@ class NotificationService {
    
     globalNavigatorKey.currentState?.push(
       MaterialPageRoute(
-        builder: (_) => UserListPage(), 
+        builder: (_) => MainNavigationPage(), 
       ),
     );
   }
@@ -63,20 +66,29 @@ class NotificationService {
   final currentUserEmail = prefs.getString('user_email') ?? 'unknown_user@example.com';
 
   final newMessage = MessageModel(
-    sender: sender,
+    sender: senderEmail,
     receiver: currentUserEmail,
     message: text,
     timestamp: DateTime.now(),
   );
+  print("check time++++++++");
+    print( text);
+  print( newMessage.timestamp);
 
   // Save to SQLite
+ final exists = await _db.messageExists(newMessage);
+if (!exists) {
   await _db.insertMessage(newMessage);
-  print("📥 [FG] Message stored from $sender");
-
-  final allMessages = await _db.getMessages(sender, currentUserEmail);
-for (var msg in allMessages) {
-  print("📦 [DB] ${msg.sender} ➡ ${msg.receiver}: ${msg.message}");
+  print("✅ Message stored.");
+} else {
+  print("⛔ Duplicate message skipped.");
 }
+
+
+//   final allMessages = await _db.getMessages(sender, currentUserEmail);
+// for (var msg in allMessages) {
+//   print("📦 [DB] ${msg.sender} ➡ ${msg.receiver}: ${msg.message}");
+// }
 
    // ✅ Add sender to paired users if not already added
   final pairedUsers = await PairedUserStorageService().getUsers();
@@ -102,33 +114,33 @@ for (var msg in allMessages) {
   final context = globalNavigatorKey.currentContext;
   if (context != null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("New message from $sender")),
+      SnackBar(content: Text(" New message from $sender")),
     );
   }
 
   // Optionally show local notification if available in message
-  final notification = message.notification;
-  final android = message.notification?.android;
+  // final notification = message.notification;
+  // final android = message.notification?.android;
 
-  if (notification != null && android != null) {
-    const androidDetails = AndroidNotificationDetails(
-      'default_channel_id',
-      'Default Channel',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
+  // if (notification != null && android != null) {
+  //   const androidDetails = AndroidNotificationDetails(
+  //     'default_channel_id',
+  //     'Default Channel',
+  //     importance: Importance.max,
+  //     priority: Priority.high,
+  //     ticker: 'ticker',
+  //   );
 
-    const platformDetails = NotificationDetails(android: androidDetails);
+  //   const platformDetails = NotificationDetails(android: androidDetails);
 
-    await flutterLocalNotificationsPlugin.show(
-      notification.hashCode,
-      notification.title ?? 'New Message from FL $sender',
-      notification.body ?? text,
-      platformDetails,
-      payload: 'chat',
-    );
-  }
+  //   await flutterLocalNotificationsPlugin.show(
+  //     notification.hashCode,
+  //     notification.title ?? 'New Message from $sender',
+  //     notification.body ?? text,
+  //     platformDetails,
+  //     payload: 'chat',
+  //   );
+  // }
 });
 
   }

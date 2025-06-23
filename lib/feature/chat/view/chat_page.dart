@@ -1,3 +1,4 @@
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/models/message_model.dart';
 import 'package:basic_chat_app/data/models/user_model.dart';
 import 'package:basic_chat_app/data/services/database_service.dart';
@@ -30,31 +31,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
     super.initState();
-    messaging = FirebaseMessaging.instance;
-
-    // Request permissions (iOS/Android 13+)
-    requestNotificationPermissions();
-
-    // Get the FCM token and print it (send to your backend or share with sender)
-    messaging.getToken().then((token) {
-      print('🔑 FCM Token: $token');
-      // TODO: Save/send token to backend or relevant user logic
-    });
-
- 
-
-
-
-  }
-
-  Future<void> requestNotificationPermissions() async {
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    print('🔔 User granted permission: ${settings.authorizationStatus}');
   }
 
   @override
@@ -71,7 +47,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final messages = ref.watch(chatProvider(widget.user));
 
     return Scaffold(
-      appBar: AppBar(title: Text('Chat with ${widget.user.name}')),
+      appBar: CustomAppBar(
+  title: 'Chat with ${widget.user.name}',
+
+),
       body: Column(
         children: [
           Expanded(

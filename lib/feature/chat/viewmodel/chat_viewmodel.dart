@@ -54,7 +54,8 @@ class ChatViewModel extends StateNotifier<List<MessageModel>> {
   }
 
   Future<void> loadMessages() async {
-    state = await db.getMessages(currentUserEmail, partnerUser.fcmToken);
+     state = await db.getMessages(currentUserEmail, partnerUser.email);
+   // state = await db.getMessages(currentUserEmail, partnerUser.name);
   }
 
 
@@ -64,7 +65,7 @@ class ChatViewModel extends StateNotifier<List<MessageModel>> {
   Future<void> sendMessage(String msg) async {
     final message = MessageModel(
       sender: currentUserEmail,
-      receiver: partnerUser.fcmToken,
+      receiver: partnerUser.email,
       message: msg,
       timestamp: DateTime.now(),
     );

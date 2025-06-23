@@ -1,3 +1,4 @@
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/qr/widget/scan_qr_page.dart';
@@ -46,7 +47,7 @@ class _PairingPageState extends ConsumerState<PairingPage> {
     final currentUser = ref.watch(authProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.translate('paired_user'))),
+      appBar: CustomAppBar(title: t.translate('paired_user')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

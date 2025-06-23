@@ -1,4 +1,5 @@
 import 'package:basic_chat_app/core/localization/app_localization.dart';
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/services/background_message_handler.dart';
 import 'package:basic_chat_app/feature/auth/view/login_page.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
@@ -31,7 +32,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
-    ref.read(notificationProvider).initialize();
+   // ref.read(notificationProvider).initialize();
     ref.read(notificationProvider).setupForegroundListener();
     return MaterialApp(
       title: 'Chat App',
@@ -67,7 +68,13 @@ class ThemeTogglePage extends ConsumerWidget {
     final t = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.translate('app_title'))),
+      appBar: CustomAppBar(
+  title: t.translate('app_title'),
+  hideBackButton: true,
+  onBack: () {
+  },
+),
+     
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

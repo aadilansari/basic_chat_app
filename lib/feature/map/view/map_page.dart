@@ -1,3 +1,4 @@
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -89,7 +90,7 @@ Future<void> _loadLocation() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Location: Map View')),
+      appBar: CustomAppBar(title:  'Location: Map View'),
       body: currentPosition == null
           ? const Center(child: CircularProgressIndicator())
           : FlutterMap(

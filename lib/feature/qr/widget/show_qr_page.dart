@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/feature/auth/viewmodel/auth_viewmodel.dart';
 import 'package:basic_chat_app/feature/qr/view/pairing_page.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class ShowQrPage extends ConsumerWidget {
     final user = ref.watch(authProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('QR Actions')),
+      appBar: CustomAppBar(title:'QR Actions'),
       body: user == null
           ? const Center(child: Text("Please log in first"))
           : Center(

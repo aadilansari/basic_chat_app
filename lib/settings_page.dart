@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:basic_chat_app/core/localization/app_localization.dart';
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/core/widgets/theme_toggle_button.dart';
 import 'package:basic_chat_app/provider/locale_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title:Text(t.translate('settings'))),
+      appBar: CustomAppBar(title: t.translate('settings')),
       body: Center(
         child: Column(
           children: [

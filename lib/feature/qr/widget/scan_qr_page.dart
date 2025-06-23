@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/data/models/user_model.dart';
 import 'package:basic_chat_app/data/services/paired_user_storage_service.dart';
 import 'package:basic_chat_app/feature/chat/view/user_list_page.dart';
+import 'package:basic_chat_app/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -32,7 +34,7 @@ class _ScanQrPageState extends ConsumerState<ScanQrPage> {
         Navigator.pop(context);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const UserListPage()),
+          MaterialPageRoute(builder: (_) => const MainNavigationPage()),
         );
       }
     } catch (e) {
@@ -48,7 +50,7 @@ class _ScanQrPageState extends ConsumerState<ScanQrPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Scan QR Code")),
+      appBar: CustomAppBar(title: "Scan QR Code"),
       body: MobileScanner(
         controller: MobileScannerController(),
         onDetect: (barcode) {

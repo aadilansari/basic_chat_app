@@ -1,4 +1,5 @@
 import 'package:basic_chat_app/core/localization/app_localization.dart';
+import 'package:basic_chat_app/core/widgets/custom_appbar.dart';
 import 'package:basic_chat_app/core/widgets/custom_textfield.dart';
 import 'package:basic_chat_app/core/widgets/password_textfield.dart';
 import 'package:basic_chat_app/data/models/user_model.dart';
@@ -77,8 +78,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     final selectedCountry = ref.watch(selectedCountryProvider);
 final t = AppLocalizations.of(context);
     return Scaffold(
-  appBar: AppBar(
-    title: Text(t.translate("back")),
+  appBar: CustomAppBar(
+    title: t.translate("back"),
   ),
   body: SingleChildScrollView(
     child: ConstrainedBox(

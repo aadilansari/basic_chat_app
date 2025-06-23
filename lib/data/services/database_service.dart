@@ -30,12 +30,24 @@ class DatabaseService {
     );
   }
 
+  //inserMessgate
+  // incoming ==> 
+  // sending ==>
+
+
   Future<void> insertMessage(MessageModel message) async {
+   print('Message object: $message');
+  print('Message as Map: ${message.toMap()}');
     final dbClient = await db;
     await dbClient.insert('messages', message.toMap());
   }
 
+  // user1==> realme  user2==> fcmtokensender 
+
+  //incoming == user1 = iqoo user2== fcmtokenreciever
+
   Future<List<MessageModel>> getMessages(String user1, String user2) async {
+     print('Getting messages between user1: $user1 and user2: $user2');
     final dbClient = await db;
     final maps = await dbClient.query(
       'messages',
@@ -45,4 +57,20 @@ class DatabaseService {
     );
     return maps.map((e) => MessageModel.fromMap(e)).toList();
   }
+
+  Future<bool> messageExists(MessageModel message) async {
+  final dbClient = await db;
+  final result = await dbClient.query(
+    'messages',
+    where: 'sender = ? AND receiver = ? AND message = ? AND timestamp = ?',
+    whereArgs: [
+      message.sender,
+      message.receiver,
+      message.message,
+      message.timestamp.toIso8601String(),
+    ],
+  );
+  return result.isNotEmpty;
+}
+
 }

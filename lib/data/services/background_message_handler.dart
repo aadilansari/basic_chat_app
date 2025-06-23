@@ -7,12 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 @pragma('vm:entry-point')
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   final sender = message.data['sender'] ?? 'Unknown';
+   final senderEmail = message.data['email']?? '';
   final text = message.data['message'] ?? '';
  final prefs = await SharedPreferences.getInstance();
   final currentUserEmail = prefs.getString('user_email') ?? 'unknown_user@example.com';
 
   final newMessage = MessageModel(
-    sender: sender,
+    sender: senderEmail,
     receiver: currentUserEmail, // Replace with actual login logic
     message: text,
     timestamp: DateTime.now(),
