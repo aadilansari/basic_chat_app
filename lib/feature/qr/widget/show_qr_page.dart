@@ -33,18 +33,33 @@ class ShowQrPage extends ConsumerWidget {
                   version: QrVersions.auto,
                 ),
                 const SizedBox(height: 32),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.qr_code_scanner),
-                  label:  Text(t.translate('scan_to_pair_user'),style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400 )),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PairingPage(),
+             
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:  16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton.icon(
+                           icon:  Icon(Icons.qr_code_scanner, color: Colors.white,),
+                          label: Text(t.translate('scan_to_pair_user'), style: TextStyle(color: Colors.white),),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                       onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PairingPage(),
+                        ),
+                      );
+                    },
+                     
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
               ],
             ),
           ),

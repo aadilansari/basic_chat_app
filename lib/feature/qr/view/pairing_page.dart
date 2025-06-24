@@ -64,33 +64,37 @@ class _PairingPageState extends ConsumerState<PairingPage> {
       )
     : Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(
-          t.translate('paired_with_user', params: {
-            'name': scannedUser!.name,
-            'email': scannedUser!.email,
-          }),
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.green,
-          ),
-          textAlign: TextAlign.center,
-        ),
+        child: Container()
       ),
             const SizedBox(height: 24),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.qr_code_scanner),
-              label: Text(t.translate('scan_qr'), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400 )),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ScanQrPage(
-                      onScanComplete: handleScannedUser,
+          
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal:  16.0),
+              child: SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton.icon(
+                          icon: const Icon(Icons.qr_code_scanner, color: Colors.white,),
+                          label: Text(t.translate('scan_qr'), style: TextStyle(color: Colors.white),),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                       onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ScanQrPage(
+                        onScanComplete: handleScannedUser,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+                     
+                      ),
+                    ),
             ),
           ],
         ),
